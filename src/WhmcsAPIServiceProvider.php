@@ -1,20 +1,21 @@
-<?php 
+<?php
+
 namespace BionConnection\WhmcsAPI;
 
 use Illuminate\Support\ServiceProvider;
 use Gufy\Whmcs\Whmcs;
 
-class WhmcsAPIServiceProvider extends ServiceProvider
-{
+class WhmcsAPIServiceProvider extends ServiceProvider {
+
     /**
      * Perform post-registration booting of services.
      *
      * @return void
      */
-   protected $defer = false;
-    public function boot()
-    {
-      
+    protected $defer = false;
+
+    public function boot() {
+        
     }
 
     /**
@@ -22,9 +23,8 @@ class WhmcsAPIServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function register()
-    {
-        $this->mergeConfigFrom(__DIR__.'/../config/whmcsapi.php', 'whmcsapi');
+    public function register() {
+        $this->mergeConfigFrom(__DIR__ . '/../config/whmcsapi.php', 'whmcsapi');
 
         // Register the service the package provides.
         $this->app->singleton('whmcsapi', function () {
@@ -32,13 +32,20 @@ class WhmcsAPIServiceProvider extends ServiceProvider
             \Config::set('whmcs.url', config('whmcsapi.url'));
             \Config::set('whmcs.password', config('whmcsapi.password'));
             \Config::set('whmcs.username', config('whmcsapi.username'));
-            
+
             return new WhmcsAPI($whmcs);
         });
-        
+
+        $this->app->booting(function() {
+
+            $loader = \Illuminate\Foundation\AliasLoader::getInstance();
+
+            $loader->alias('WhmcsApi', 'BionConnection\WhmcsAPI\Facades\WhmcsAPI');
+        });
+
         $this->publishes([
-			dirname(__FILE__).'/../config/whmcsapi.php'=>config_path('whmcs.php'),
-		]);
+            dirname(__FILE__) . '/../config/whmcsapi.php' => config_path('whmcs.php'),
+        ]);
     }
 
     /**
@@ -46,10 +53,8 @@ class WhmcsAPIServiceProvider extends ServiceProvider
      *
      * @return array
      */
-    public function provides()
-    {
+    public function provides() {
         return ['whmcsapi'];
     }
-    
-   
+
 }
