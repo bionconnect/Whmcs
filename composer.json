@@ -1,0 +1,43 @@
+{
+    "name": "bionconnection/whmcsapi",
+    "description": ":description",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Ivan berthillood",
+            "email": "ivan.sys@gmail.com",
+            "homepage": "connect.grupobion.com"
+        }
+    ],
+    "homepage": "https://github.com/bionconnection/whmcsapi",
+    "keywords": ["Laravel", "WhmcsAPI"],
+    "require": {
+        "illuminate/support": "~5"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~7.0",
+        "mockery/mockery": "^1.1",
+        "orchestra/testbench": "~3.0",
+        "sempro/phpunit-pretty-print": "^1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "BionConnection\\WhmcsAPI\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "BionConnection\\WhmcsAPI\\Tests\\": "tests"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "BionConnection\\WhmcsAPI\\WhmcsAPIServiceProvider"
+            ],
+            "aliases": {
+                "WhmcsAPI": "BionConnection\\WhmcsAPI\\Facades\\WhmcsAPI"
+            }
+        }
+    }
+}
