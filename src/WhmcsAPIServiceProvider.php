@@ -1,61 +1,51 @@
-<?php namespace Gufy\Whmcs;
+<?php 
+namespace BionConnection\WhmcsAPI;
 
 use Illuminate\Support\ServiceProvider;
+use Gufy\Whmcs\Whmcs;
 
-class WhmcsServiceProvider extends ServiceProvider {
+class WhmcsAPIServiceProvider extends ServiceProvider
+{
+    /**
+     * Perform post-registration booting of services.
+     *
+     * @return void
+     */
+   protected $defer = false;
+    public function boot()
+    {
+      
+    }
 
-	/**
-	 * Indicates if loading of the provider is deferred.
-	 *
-	 * @var bool
-	 */
-	protected $defer = false;
+    /**
+     * Register any package services.
+     *
+     * @return void
+     */
+    public function register()
+    {
+        $this->mergeConfigFrom(__DIR__.'/../config/whmcsapi.php', 'whmcsapi');
 
-	/**
-	 * Bootstrap the application events.
-	 *
-	 * @return void
-	 */
-	public function boot()
-	{
-		// $this->package('gufy/whmcs');
-	}
+        // Register the service the package provides.
+        $this->app->singleton('whmcsapi', function () {
+            $whmcs = new Whmcs();
+            \Config::set('whmcs.url', config('whmcsapi.url'));
+            \Config::set('whmcs.password', config('whmcsapi.password'));
+            \Config::set('whmcs.username', config('whmcsapi.username'));
+            
+            return new WhmcsAPI($whmcs);
+        });
+    }
 
-	/**
-	 * Register the service provider.
-	 *
-	 * @return void
-	 */
-	public function register()
-	{
-
-		$this->app->singleton('Whmcs', function() {
-
-			return new Whmcs();
-
-		});
-
-		$this->app->booting(function() {
-
-		  $loader = \Illuminate\Foundation\AliasLoader::getInstance();
-
-		  $loader->alias('Whmcs', 'Gufy\Whmcs\Facades\Whmcs');
-
-		});
-		$this->publishes([
-			dirname(__FILE__).'/../../config/config.php'=>config_path('whmcs.php'),
-		]);
-
-	}
-
-	/**
-	 * Get the services provided by the provider.
-	 *
-	 * @return array
-	 */
-	public function provides()
-	{
-		return array('Whmcs');
-	}
-
+    /**
+     * Get the services provided by the provider.
+     *
+     * @return array
+     */
+    public function provides()
+    {
+        return ['whmcsapi'];
+    }
+    
+   
 }
