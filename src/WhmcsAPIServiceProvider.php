@@ -1,82 +1,61 @@
-<?php
-
-namespace BionConnection\WhmcsAPI;
+<?php namespace Gufy\Whmcs;
 
 use Illuminate\Support\ServiceProvider;
 
-class WhmcsAPIServiceProvider extends ServiceProvider
-{
-    /**
-     * Perform post-registration booting of services.
-     *
-     * @return void
-     */
-    public function boot()
-    {
-        // $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'bionconnection');
-        // $this->loadViewsFrom(__DIR__.'/../resources/views', 'bionconnection');
-        // $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
-        // $this->loadRoutesFrom(__DIR__.'/routes.php');
+class WhmcsServiceProvider extends ServiceProvider {
 
-        // Publishing is only necessary when using the CLI.
-        if ($this->app->runningInConsole()) {
-            $this->bootForConsole();
-        }
-    }
+	/**
+	 * Indicates if loading of the provider is deferred.
+	 *
+	 * @var bool
+	 */
+	protected $defer = false;
 
-    /**
-     * Register any package services.
-     *
-     * @return void
-     */
-    public function register()
-    {
-        $this->mergeConfigFrom(__DIR__.'/../config/whmcsapi.php', 'whmcsapi');
+	/**
+	 * Bootstrap the application events.
+	 *
+	 * @return void
+	 */
+	public function boot()
+	{
+		// $this->package('gufy/whmcs');
+	}
 
-        // Register the service the package provides.
-        $this->app->singleton('whmcsapi', function ($app) {
-            return new WhmcsAPI;
-        });
-    }
+	/**
+	 * Register the service provider.
+	 *
+	 * @return void
+	 */
+	public function register()
+	{
 
-    /**
-     * Get the services provided by the provider.
-     *
-     * @return array
-     */
-    public function provides()
-    {
-        return ['whmcsapi'];
-    }
-    
-    /**
-     * Console-specific booting.
-     *
-     * @return void
-     */
-    protected function bootForConsole()
-    {
-        // Publishing the configuration file.
-        $this->publishes([
-            __DIR__.'/../config/whmcsapi.php' => config_path('whmcsapi.php'),
-        ], 'whmcsapi.config');
+		$this->app->singleton('Whmcs', function() {
 
-        // Publishing the views.
-        /*$this->publishes([
-            __DIR__.'/../resources/views' => base_path('resources/views/vendor/bionconnection'),
-        ], 'whmcsapi.views');*/
+			return new Whmcs();
 
-        // Publishing assets.
-        /*$this->publishes([
-            __DIR__.'/../resources/assets' => public_path('vendor/bionconnection'),
-        ], 'whmcsapi.views');*/
+		});
 
-        // Publishing the translation files.
-        /*$this->publishes([
-            __DIR__.'/../resources/lang' => resource_path('lang/vendor/bionconnection'),
-        ], 'whmcsapi.views');*/
+		$this->app->booting(function() {
 
-        // Registering package commands.
-        // $this->commands([]);
-    }
+		  $loader = \Illuminate\Foundation\AliasLoader::getInstance();
+
+		  $loader->alias('Whmcs', 'Gufy\Whmcs\Facades\Whmcs');
+
+		});
+		$this->publishes([
+			dirname(__FILE__).'/../../config/config.php'=>config_path('whmcs.php'),
+		]);
+
+	}
+
+	/**
+	 * Get the services provided by the provider.
+	 *
+	 * @return array
+	 */
+	public function provides()
+	{
+		return array('Whmcs');
+	}
+
 }
