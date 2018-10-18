@@ -35,6 +35,10 @@ class WhmcsAPIServiceProvider extends ServiceProvider
             
             return new WhmcsAPI($whmcs);
         });
+        
+        $this->publishes([
+			dirname(__FILE__).'/../../config/config.php'=>config_path('whmcs.php'),
+		]);
     }
 
     /**
