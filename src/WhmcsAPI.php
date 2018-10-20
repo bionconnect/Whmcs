@@ -70,34 +70,31 @@ class WhmcsAPI {
         return $this->Api->execute('GetClientsProducts', $arrParam);
     }
 
-    public function changeProductCustomField($serviceid, $fiel,$value ) {
-        
-        
-        $BaseCustom = base64_encode(serialize(array($fiel=>$value)));
-        
+    public function changeProductCustomField($serviceid, $fiel, $value) {
+
+
+        $BaseCustom = base64_encode(serialize(array($fiel => $value)));
+
         return $this->Api->execute('UpdateClientProduct', array(
                     'serviceid' => $serviceid,
                     'customfields' => $BaseCustom
         ));
-        
     }
-            
+
     public function upgradeProduct($serviceid, $newproductbillingcycle, $newproductid) {
-               $methods =  $this->getPaymentMethod();
-       return $this->Api->execute('UpgradeProduct', array(
+        $methods = $this->getPaymentMethod();
+        return $this->Api->execute('UpgradeProduct', array(
                     'serviceid' => $serviceid,
                     'newproductid' => $newproductid,
-                    'newproductbillingcycle'=>$newproductbillingcycle,
-                    'type'=>'product',
-                    'paymentmethod'=>$methods["paymentmethods"]["paymentmethod"][0]->module
-           
+                    'newproductbillingcycle' => $newproductbillingcycle,
+                    'type' => 'product',
+                    'paymentmethod' => $methods["paymentmethods"]["paymentmethod"][0]->module
         ));
-        
     }
 
     public function addOrder($clientid, array $pid, $addonid = null) {
-       $methods =  $this->getPaymentMethod();
-        
+        $methods = $this->getPaymentMethod();
+
         $arrParam = array(
             'clientid' => $clientid,
             'paymentmethod' => $methods["paymentmethods"]["paymentmethod"][0]->module,
@@ -108,8 +105,8 @@ class WhmcsAPI {
             $arrParam['addonid'] = $addonid;
         }
 
-        return $this->Api->execute('AddOrder',$arrParam
-       );
+        return $this->Api->execute('AddOrder', $arrParam
+        );
     }
 
     public function openTicket($deptid, $subject, $message, $clientid) {
@@ -132,25 +129,26 @@ class WhmcsAPI {
 
         return $arrProduct;
     }
-    public function acceptOrder($ordeid){
-       return $this->Api->execute('AcceptOrder', array(
+
+    public function acceptOrder($ordeid) {
+        return $this->Api->execute('AcceptOrder', array(
                     'orderid' => $ordeid
                         )
-        );  
+        );
     }
-    private function getConfigGeneral($fieldConfig){
-           return $this->Api->execute('GetConfigurationValue', array(
+
+    private function getConfigGeneral($fieldConfig) {
+        return $this->Api->execute('GetConfigurationValue', array(
                     'setting' => $fieldConfig
                         )
-        );  
+        );
     }
-    private function getPaymentMethod(){
-            return $this->Api->execute('GetPaymentMethods', array(
+
+    private function getPaymentMethod() {
+        return $this->Api->execute('GetPaymentMethods', array(
                     'setting' => $fieldConfig
                         )
-        ); 
-        
-    }    
-    
+        );
+    }
 
 }
