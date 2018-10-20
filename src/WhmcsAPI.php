@@ -70,15 +70,37 @@ class WhmcsAPI {
         return $this->Api->execute('GetClientsProducts', $arrParam);
     }
 
-    public function changeProduct($serviceid, $newproductbillingcycle = null, $newproductid = null, $icc = null) {
-        // No quedo clara  
+    public function changeProductCustomField($serviceid, $fiel,$value ) {
+        
+        
+        $BaseCustom = base64_encode(serialize(array($fiel=>$value)));
+        
+        return $this->Api->execute('UpdateClientProduct', array(
+                    'serviceid' => $serviceid,
+                    'customfields' => $BaseCustom
+        ));
+        
+    }
+            
+    public function upgradeProduct($serviceid, $newproductbillingcycle, $newproductid) {
+               $methods =  $this->getPaymentMethod();
+       return $this->Api->execute('UpgradeProduct', array(
+                    'serviceid' => $serviceid,
+                    'newproductid' => $newproductid,
+                    'newproductbillingcycle'=>$newproductbillingcycle,
+                    'type'=>'product',
+                    'paymentmethod'=>$methods["paymentmethods"]["paymentmethod"][0]->module
+           
+        ));
+        
     }
 
     public function addOrder($clientid, array $pid, $addonid = null) {
-
+       $methods =  $this->getPaymentMethod();
+        
         $arrParam = array(
             'clientid' => $clientid,
-            'paymentmethod' => 'gmp',
+            'paymentmethod' => $methods["paymentmethods"]["paymentmethod"][0]->module,
             'pid' => $pid,
         );
 
@@ -86,11 +108,8 @@ class WhmcsAPI {
             $arrParam['addonid'] = $addonid;
         }
 
-        return $this->Api->execute('AddOrder', array(
-                    'clientid' => $clientid,
-                    'paymentmethod' => 'gmp',
-                    'pid' => $pid
-        ));
+        return $this->Api->execute('AddOrder',$arrParam
+       );
     }
 
     public function openTicket($deptid, $subject, $message, $clientid) {
@@ -119,5 +138,19 @@ class WhmcsAPI {
                         )
         );  
     }
+    private function getConfigGeneral($fieldConfig){
+           return $this->Api->execute('GetConfigurationValue', array(
+                    'setting' => $fieldConfig
+                        )
+        );  
+    }
+    private function getPaymentMethod(){
+            return $this->Api->execute('GetPaymentMethods', array(
+                    'setting' => $fieldConfig
+                        )
+        ); 
+        
+    }    
+    
 
 }
