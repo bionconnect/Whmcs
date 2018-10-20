@@ -14,9 +14,11 @@ class WhmcsAPI {
     public function __construct($apiWhmcs) {
         $this->Api = $apiWhmcs;
     }
-    public function getBillingCycle(){
-        return ["Free Account"=>0,"One Time"=>0,"Monthly"=>1,"Quarterly"=>3,"Semi-Annually"=>6,"Annually"=>12,"Biennially"=>24,"Triennially"=>32];
+
+    public function getBillingCycle() {
+        return ["Free Account" => 0, "One Time" => 0, "Monthly" => 1, "Quarterly" => 3, "Semi-Annually" => 6, "Annually" => 12, "Biennially" => 24, "Triennially" => 32];
     }
+
     public function AddCredit($clientid, $amount, $description) {
         return $this->Api->execute('AddCredit', array(
                     'amount' => $amount,
@@ -26,25 +28,20 @@ class WhmcsAPI {
         );
     }
 
-    public function changeServiceDueDate($serverid, $nextduedate) {
-        return $this->Api->execute('UpdateClientProduct', array(
-                    'serviceid' => $serverid,
-                    'nextduedate' => $nextduedate
-                        )
-        );
+    public function changeService($serverid, $nextduedate,$status) {
+        $arrparam = array();
+        $arrparam["serviceid"] = $serverid;
+        if(isset($nextduedate)){$arrparam["nextduedate"] = $nextduedate; }
+        if(isset($status)){$arrparam["status"] = $nextduedate; }
+         
+        return $this->Api->execute('UpdateClientProduct', $arrparam);
     }
 
-    private function changeServiceStatus($serverid, $status) {
-
-        return $this->Api->execute('UpdateClientProduct', array(
-                    'serviceid' => $serverid,
-                    'status' => $status
-        ));
-    }
+ 
 
     public function terminateService($serverid) {
 
-        $this->changeServiceStatus($serverid, STATUS_TERMINATE);
+        $this->changeService($serverid,null, STATUS_TERMINATE);
     }
 
     public function getProduct($pid = null) {
