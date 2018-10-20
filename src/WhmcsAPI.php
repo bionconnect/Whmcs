@@ -14,7 +14,9 @@ class WhmcsAPI {
     public function __construct($apiWhmcs) {
         $this->Api = $apiWhmcs;
     }
-
+    public function getBillingCycle(){
+        return ["Free Account"=>0,"One Time"=>0,"Monthly"=>1,"Quarterly"=>3,"Semi-Annually"=>6,"Annually"=>12,"Biennially"=>24,"Triennially"=>32];
+    }
     public function AddCredit($clientid, $amount, $description) {
         return $this->Api->execute('AddCredit', array(
                     'amount' => $amount,
