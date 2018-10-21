@@ -32,7 +32,7 @@ class WhmcsAPI {
         $arrparam = array();
         $arrparam["serviceid"] = $serverid;
         if(isset($nextduedate)){$arrparam["nextduedate"] = $nextduedate; }
-        if(isset($status)){$arrparam["status"] = $nextduedate; }
+        if(isset($status)){$arrparam["status"] = $status; }
          
         return $this->Api->execute('UpdateClientProduct', $arrparam);
     }
