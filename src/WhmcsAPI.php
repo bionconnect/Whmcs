@@ -14,7 +14,14 @@ class WhmcsAPI {
     public function __construct($apiWhmcs) {
         $this->Api = $apiWhmcs;
     }
-
+    public function validateLogin($email,$pass){
+        
+        return $this->Api->execute('ValidateLogin', array(
+                    'email' => $email,
+                    'password2' => $pass
+                        )
+        ); 
+    }
     public function getBillingCycle() {
         return ["Free Account" => 0, "One Time" => 0, "Monthly" => 1, "Quarterly" => 3, "Semi-Annually" => 6, "Annually" => 12, "Biennially" => 24, "Triennially" => 32];
     }
