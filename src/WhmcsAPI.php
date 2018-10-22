@@ -14,6 +14,13 @@ class WhmcsAPI {
     public function __construct($apiWhmcs) {
         $this->Api = $apiWhmcs;
     }
+    public function getClients($idclient){
+        
+       return $this->Api->execute('GetClientsDetails', array(
+                    'clientid' => $idclient
+                        )
+        );    
+    }
     public function validateLogin($email,$pass){
         
         return $this->Api->execute('ValidateLogin', array(
