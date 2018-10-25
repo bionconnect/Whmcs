@@ -9,6 +9,7 @@ class WhmcsAPI {
     /** @var \Gufy\Whmcs\Whmcs */
     protected $Api;
 
+    
     const STATUS_TERMINATE = "TERMINATE";
 
     public function __construct($apiWhmcs) {
