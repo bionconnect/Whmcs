@@ -10,7 +10,7 @@ class WhmcsAPI {
     protected $Api;
 
     
-    const STATUS_TERMINATE = "TERMINATE";
+    const STATUS_TERMINATE = "Terminated";
 
     public function __construct($apiWhmcs) {
         $this->Api = $apiWhmcs;
@@ -42,7 +42,12 @@ class WhmcsAPI {
                         )
         );
     }
-
+ public function getOrder($ordeid) {
+        return $this->Api->execute('GetOrders', array(
+                    'id' => $ordeid
+                        )
+        );
+    }
     public function changeService($serverid, $nextduedate,$status) {
         $arrparam = array();
         $arrparam["serviceid"] = $serverid;
@@ -56,7 +61,7 @@ class WhmcsAPI {
 
     public function terminateService($serverid) {
 
-        $this->changeService($serverid,null, STATUS_TERMINATE);
+      return  $this->changeService($serverid,null, self::STATUS_TERMINATE)->result == "success" ? true: false;
     }
 
     public function getProduct($pid = null) {
@@ -84,16 +89,21 @@ class WhmcsAPI {
         return $this->Api->execute('GetClientsProducts', $arrParam);
     }
 
-    public function changeProductCustomField($serviceid, $fiel, $value) {
+  public function changeProductCustomField($serviceid, $fiel, $value) {
 
+/*
+ $BaseCustom = base64_encode(serialize(array($fiel => $value)));
 
-        $BaseCustom = base64_encode(serialize(array($fiel => $value)));
-
-        return $this->Api->execute('UpdateClientProduct', array(
+$stringcutom = base64_encode(serialize( array(
                     'serviceid' => $serviceid,
                     'customfields' => $BaseCustom
-        ));
+        )));
+
+
+
+        return $this->Api->execute('UpdateClientProduct',$stringcutom);*/
     }
+
 
     public function upgradeProduct($serviceid, $newproductbillingcycle, $newproductid) {
         $methods = $this->getPaymentMethod();
@@ -123,14 +133,22 @@ class WhmcsAPI {
         );
     }
 
-    public function openTicket($deptid, $subject, $message, $clientid) {
-        return $this->Api->execute('OpenTicket', array(
+   public function openTicket( $subject, $message, $clientid=null,$name=null,$deptid=1) {
+        $arr = array(
                     'deptid' => $deptid,
                     'subject' => $subject,
                     'message' => $message,
                     'clientid' => $clientid,
-                        )
-        );
+            );
+        
+        
+        if(isset($name)){ $arr["name"] = $name;}
+        if(isset($clientid)){ $arr["clientid"] =$clientid;}
+        
+        
+        return $this->Api->execute('OpenTicket', $arr
+                        );
+   
     }
 
     public function getServiceByOrder($ordeid, $clientid, $pid) {
