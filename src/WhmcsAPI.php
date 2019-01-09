@@ -162,9 +162,10 @@ $stringcutom = base64_encode(serialize( array(
         return $arrProduct;
     }
 
-    public function acceptOrder($ordeid) {
+    public function acceptOrder($ordeid,$sendemail = true) {
         return $this->Api->execute('AcceptOrder', array(
-                    'orderid' => $ordeid
+                    'orderid' => $ordeid,
+                    'sendemail'=>$sendemail
                         )
         );
     }
